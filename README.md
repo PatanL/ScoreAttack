@@ -1,5 +1,7 @@
 # Score Attack: Balatro Multiplayer Experience in Singleplayer
 
+IMPORTANT: DISABLE THIS MOD BEFORE PLAYING BALATRO MULTIPLAYER, IT ISN'T COMPATIBLE
+
 Mimics balatro multiplayer ruleset in single player
 
 ## Key Features
