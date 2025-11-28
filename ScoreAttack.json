@@ -1,0 +1,13 @@
+{
+  "id": "ScoreAttack",
+  "name": "Score Attack",
+  "display_name": "Score Attack",
+  "author": ["Tangl"],
+  "description": "Score Attack",
+  "prefix": "sa",
+  "main_file": "core.lua",
+  "version": "0.1.0",
+  "dependencies": [
+      "Steamodded (>=1.0.0~BETA-0711a)"
+  ]
+}

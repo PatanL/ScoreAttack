@@ -1,0 +1,21 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 100
+
+# Patch: Force Glass Card values in Card:set_ability
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.name == 'Glass Card' then self.ability.x_mult = 2 end"
+position = "at"
+payload = "if self.ability.name == 'Glass Card' then self.ability.x_mult = 1.5 end"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.name == 'Glass Card' then self.ability.extra = 4 end"
+position = "at"
+payload = "if self.ability.name == 'Glass Card' then self.ability.extra = 3 end"
+match_indent = true

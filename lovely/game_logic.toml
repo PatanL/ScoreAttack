@@ -1,0 +1,89 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 100
+
+# Patch 0: Force game_over to false immediately
+# This is CRITICAL. It tells the game "We haven't lost yet" even if score < blind.
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "local game_over = true"
+position = "after"
+payload = '''
+    if G.GAME.blind.name == 'bl_sa_score_attack' or G.GAME.blind.name == 'Score Attack' then
+        game_over = false
+    end
+'''
+match_indent = true
+
+# Patch 1: Prevent the round from ending early
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.chips - G.GAME.blind.chips >= 0 then"
+position = "at"
+payload = '''
+if G.GAME.chips - G.GAME.blind.chips >= 0 and G.GAME.blind.name ~= 'bl_sa_score_attack' and G.GAME.blind.name ~= 'Score Attack' then
+'''
+match_indent = true
+
+# Patch 2: Force Win when hands reach 0
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.current_round.hands_left < 1 then"
+position = "before"
+payload = '''
+    if (G.GAME.blind.name == 'bl_sa_score_attack' or G.GAME.blind.name == 'Score Attack') then
+        if G.GAME.current_round.hands_left < 1 then
+            -- We DO NOT set chips to 0 here anymore.
+            -- We rely on Patch 0 to prevent the loss.
+            G.STATE = G.STATES.ROUND_EVAL
+            G.STATE_COMPLETE = false
+            return
+        end
+    end
+'''
+match_indent = true
+
+# Patch 3: UI Crash Fix (Keep this)
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "function create_UIBox_blind_choice(type, run_info)"
+position = "after"
+payload = '''
+    if type == 'Boss' and G.GAME.round_resets.blind_choices[type] == 'bl_sa_score_attack' then
+        if not G.P_BLINDS['bl_sa_score_attack'] then
+            G.P_BLINDS['bl_sa_score_attack'] = {
+                key = 'bl_sa_score_attack',
+                name = 'Score Attack',
+                mult = 1,
+                dollars = 5,
+                boss = {min = 1, max = 10},
+                boss_colour = G.C.RED,
+                atlas = "sa_blind_chip",
+                pos = {x = 0, y = 0}
+            }
+        end
+    end
+'''
+match_indent = true
+
+# Patch 4: The "Game Over" Override
+# Just in case something slips through, we redirect Game Over to Win.
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "G.STATE = G.STATES.GAME_OVER"
+position = "before"
+payload = '''
+    if G.GAME.blind.name == 'bl_sa_score_attack' or G.GAME.blind.name == 'Score Attack' then
+        G.STATE = G.STATES.ROUND_EVAL
+        G.STATE_COMPLETE = false
+        return
+    end
+'''
+
+match_indent = true
