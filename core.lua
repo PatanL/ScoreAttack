@@ -20,7 +20,6 @@ SMODS.Atlas({
 })
 
 local assets = {
-    bloodstone = "j_bloodstone_sandbox.png",
     defensive_joker = "j_defensive_joker.png",
     lets_go_gambling = "j_lets_go_gambling.png",
     pacifist = "j_pacifist.png",
@@ -72,7 +71,6 @@ end
   
 -- Load all jokers
 local jokers = {
-    "bloodstone", 
     "defensive_joker", 
     "sa_hanging_chad", 
     "lets_go_gambling", 
@@ -113,6 +111,8 @@ end
 local banned_cards = {
     "c_justice",
     "v_directors_cut", 
+    "v_hieroglyph",
+	"v_petroglyph",
     "j_hanging_chad",
     "v_retcon",       
 }
